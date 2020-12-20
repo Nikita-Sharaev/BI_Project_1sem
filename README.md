@@ -10,6 +10,7 @@ Data for responders and non-responders is in the git repository.
 
 For investigation was used iTalk library:
 https://github.com/Coolgenome/iTALK/tree/master/data
+
 Paper:
 https://www.biorxiv.org/content/10.1101/507871v1
 
