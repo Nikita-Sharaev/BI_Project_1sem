@@ -1,7 +1,43 @@
 library(iTALK)
 library(dplyr)
-#iTalk function for higly expressed genes
-highly_exprs_genes<-rawParse(data,top_genes=50,stats='mean')
+
+#counts_nonresponders0 <- readRDS("pathway")
+counts_responders0 <- readRDS("pathway")
+
+#highly_exprs_genes<-rawParse(counts_nonresponders0,top_genes=50,stats='mean')
+
+#highly_exprs_genes_nonresponders <- readRDS("pathway/highly_exprs_genes_nonresponders.rds")
+highly_exprs_genes_responders <- readRDS("pathway/highly_exprs_genes_responders.rds")
+
+comm_list<-c('growth factor','other','cytokine','checkpoint')
+cell_col<-structure(c('#4a84ad','#4a1dc6','#e874bf','#b79eed', '#ff636b', '#52c63b','#9ef49a', '#e874bf','#b79eed', '#ff636b', '#52c63b','#9ef49a'),names=unique(counts_responders0$cell_type))
+par(mfrow=c(1,2))
+res<-NULL
+for(comm_type in comm_list){
+res_cat<-FindLR(highly_exprs_genes_responders,datatype='mean count',comm_type=comm_type)
+res_cat<-res_cat[order(res_cat$cell_from_mean_exprs*res_cat$cell_to_mean_exprs,decreasing=T),]
+#plot by ligand category
+#overall network plot
+NetView(res_cat,col=cell_col,vertex.label.cex=1,arrow.width=1,edge.max.width=5)
+#top 20 ligand-receptor pairs
+LRPlot(res_cat[1:20,],datatype='mean count',cell_col=cell_col,link.arr.lwd=res_cat$cell_from_mean_exprs[1:20],link.arr.width=res_cat$cell_to_mean_exprs[1:20])
+title(comm_type)
+res<-rbind(res,res_cat)
+}
+
+saveRDS(res, "res1.rds")
+saveRDS(res_cat, "res_cat.rds")
+
+res<-res[order(res$cell_from_mean_exprs*res$cell_to_mean_exprs,decreasing=T),][1:20,]
+NetView(res,col=cell_col,vertex.label.cex=1,arrow.width=1,edge.max.width=5)
+LRPlot(res[1:20,],datatype='mean count',cell_col=cell_col,link.arr.lwd=res$cell_from_mean_exprs[1:20],link.arr.width=res$cell_to_mean_exprs[1:20])
+counts_responders0<-counts_responders0 %>% mutate(compare_group=sample(2,nrow(counts_responders0),replace=TRUE))
+deg_t<-DEG(counts_responders0 %>% filter(cell_type=='Monocytes/macrophages'),method='Wilcox',contrast=c(2,1))
+deg_nk<-DEG(counts_responders0 %>% filter(cell_type=='Monocytes/macrophages'),method='Wilcox',contrast=c(2,1))
+par(mfrow=c(1,2))
+res<-NULL
+
+saveRDS(res, "res2.rds")
 
 #non-responders top ligands in different cell types
 nonresp_cells <- vector(mode = 'list', length = length(unique(res_cat_nonresp$cell_from)))
