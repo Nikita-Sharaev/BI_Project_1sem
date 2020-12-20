@@ -10,6 +10,8 @@ Data for responders and non-responders is in the git repository.
 
 For investigation was used iTalk library:
 https://github.com/Coolgenome/iTALK/tree/master/data
+Paper:
+https://www.biorxiv.org/content/10.1101/507871v1
 
 The aim of the study was to compare data on gene expression in people who respond to checkpoint immunotherapy and those who do not. Hypothesis: People who respond to such immunotherapy will have changes in the expression of genes involved in the regulation of the immune system.
 The iTalk package allows you to find ligand-receptor pairs (using the built-in database of such interactions). Thus, we can find genes for proteins localized on the membrane and involved in signaling.
